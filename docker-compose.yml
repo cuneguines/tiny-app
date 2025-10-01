@@ -1,0 +1,21 @@
+version: "3.9"
+services:
+  app:
+    build: ./backend
+    ports:
+      - "3003:3000"
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: example
+      DB_NAME: tinyapp
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: tinyapp
+    ports:
+      - "3307:3306"

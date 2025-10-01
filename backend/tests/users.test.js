@@ -7,4 +7,10 @@ describe('Users API', () => {
     expect(res.statusCode).toBe(200);
     expect(Array.isArray(res.body)).toBe(true);
   });
+
+
+   afterAll(async () => {
+    await pool.end();  // ✅ close MySQL connection pool
+  });
 });
+

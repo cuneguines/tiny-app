@@ -25,10 +25,21 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
       - uses: actions/setup-node@v3
         with:
           node-version: 20
-      - run: npm install
-        working-directory: ./backend
-      - run: npm test
-        working-directory: ./backend
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          rm -rf node_modules
+          npm install --include=dev
+
+      - name: Fix Jest permissions
+        run: chmod +x backend/node_modules/.bin/jest
+
+      - name: Run tests
+        run: |
+          cd backend
+          npm test

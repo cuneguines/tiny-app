@@ -1,0 +1,7 @@
+global:
+  scrape_interval: 15s   # how often to scrape metrics
+
+scrape_configs:
+  - job_name: 'tiny-app-backend'
+    static_configs:
+      - targets: ['backend:3000']   # 'backend' is the Docker service name

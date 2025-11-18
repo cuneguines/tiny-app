@@ -43,6 +43,7 @@ jobs:
         run: |
           cd backend
           npm test
+          npx jest --forceExit
 
   deploy:
     needs: build-test          # runs only if build-test succeeds

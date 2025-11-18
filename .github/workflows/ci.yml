@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD
 
 on:
   push:
@@ -7,32 +7,31 @@ on:
     branches: [main]
 
 jobs:
+  # Build and test on GitHub-hosted Ubuntu runner
   build-test:
-    runs-on: ubuntu-latest   # or self-hosted if you prefer
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
       - name: Build Docker containers
-        run: |
-          docker compose build backend db
+        run: docker compose build backend db
 
       - name: Start DB container
         run: |
           docker compose up -d db
-          # wait a few seconds for MySQL to initialize
-          sleep 10
+          sleep 10  # wait for MySQL to initialize
 
-     # - name: Run tests inside backend container
-      #  run: |
-        #  docker compose run --rm backend npm test -- --forceExit
+      - name: Run tests inside backend container
+        run: docker compose run --rm backend npm test -- --forceExit
 
+  # Deploy only if build-test succeeds
   deploy:
     needs: build-test
-    runs-on: self-hosted       # your Windows runner
+    runs-on: self-hosted   # your Windows server runner
     steps:
       - uses: actions/checkout@v3
 
-      - name: Deploy app in Docker
+      - name: Deploy app
         run: |
           cd $env:GITHUB_WORKSPACE
           docker compose down

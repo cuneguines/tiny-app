@@ -43,7 +43,7 @@ jobs:
         run: |
           cd backend
           npm test
-deploy:
+  deploy:
     needs: build-test
     runs-on: self-hosted   # Your Windows server runner
     steps:

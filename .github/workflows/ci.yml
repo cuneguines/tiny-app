@@ -43,3 +43,21 @@ jobs:
         run: |
           cd backend
           npm test
+deploy:
+    needs: build-test
+    runs-on: self-hosted   # Your Windows server runner
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Deploy app
+        run: |
+          # Navigate to runner's checkout folder
+          cd $env:GITHUB_WORKSPACE
+
+          # Pull latest code just in case
+          git reset --hard
+          git pull origin main
+
+          # Rebuild and restart Docker containers
+          docker compose down
+          docker compose up -d --build

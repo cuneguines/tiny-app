@@ -8,53 +8,32 @@ on:
 
 jobs:
   build-test:
-    runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mysql:8
-        env:
-          MYSQL_ROOT_PASSWORD: example
-          MYSQL_DATABASE: tinyapp
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping --silent"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
-
+    runs-on: ubuntu-latest   # or self-hosted if you prefer
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 20
-
-      - name: Install dependencies
+      - name: Build Docker containers
         run: |
-          cd backend
-          rm -rf node_modules
-          npm install --include=dev
+          docker compose build backend db
 
-      - name: Fix Jest permissions
-        run: chmod +x backend/node_modules/.bin/jest
-
-      - name: Run tests
+      - name: Start DB container
         run: |
-          cd backend
-          npm test
-          npx jest --forceExit
+          docker compose up -d db
+          # wait a few seconds for MySQL to initialize
+          sleep 10
+
+      - name: Run tests inside backend container
+        run: |
+          docker compose run --rm backend npm test -- --forceExit
 
   deploy:
-    needs: build-test          # runs only if build-test succeeds
-    runs-on: self-hosted       # your Windows server runner
+    needs: build-test
+    runs-on: self-hosted       # your Windows runner
     steps:
       - uses: actions/checkout@v3
 
-      - name: Deploy app
+      - name: Deploy app in Docker
         run: |
           cd $env:GITHUB_WORKSPACE
-          git reset --hard
-          git pull origin main
           docker compose down
           docker compose up -d --build

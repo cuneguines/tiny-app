@@ -2,18 +2,7 @@
 version: '3.8'
 
 services:
-  sonarqube:
-    image: sonarqube:latest
-    container_name: sonarqube
-    ports:
-      - "9000:9000"
-    environment:
-      SONAR_ES_JAVA_OPTS: "-Xmx512m"
-    volumes:
-      - sonarqube_data:/opt/sonarqube/data
-      - sonarqube_extensions:/opt/sonarqube/extensions
-    depends_on:
-      - backend
+  
 
   db:
     image: mysql:8
@@ -22,3 +11,17 @@ services:
       MYSQL_DATABASE: tinyapp
     ports:
       - "3307:3306"
+
+  backend:
+    build: ./backend
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: example
+      DB_NAME: tinyapp
+
+  

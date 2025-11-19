@@ -34,6 +34,6 @@ jobs:
 
       - name: Deploy app in Docker
         run: |
-          cd "GITHUB_WORKSPACE"
+          cd "$GITHUB_WORKSPACE"
           docker compose down
           docker compose up -d --build

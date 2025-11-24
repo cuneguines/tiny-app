@@ -24,3 +24,4 @@ services:
       DB_PASSWORD: example
       DB_NAME: tinyapp
 
+  

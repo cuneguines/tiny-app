@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../db');
 
-// /Create user
+//Create user
 router.post('/', async (req, res) => {
   const { name, email } = req.body;
   const [result] = await pool.query('INSERT INTO users(name,email) VALUES (?,?)', [name, email]);

@@ -2,7 +2,7 @@
 version: '3.8'
 
 services:
-  
+      
   db:
     image: mysql:8
     environment:
@@ -22,5 +22,3 @@ services:
       DB_USER: root
       DB_PASSWORD: example
       DB_NAME: tinyapp
-
-  

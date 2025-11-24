@@ -2,8 +2,7 @@
 version: '3.8'
 
 services:
-
-      
+  
 
   db:
     image: mysql:8
@@ -25,4 +24,20 @@ services:
       DB_PASSWORD: example
       DB_NAME: tinyapp
 
-  
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      - backend
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3001:3000"
+    depends_on:
+      - prometheus
+
+
